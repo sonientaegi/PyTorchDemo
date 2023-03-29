@@ -7,6 +7,7 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 
 from network import NeuralNetwork
+from parallel import DataParallelModel, DataParallelCriterion
 
 
 def test(dataloader, model, loss_fn):
@@ -26,6 +27,8 @@ def test(dataloader, model, loss_fn):
 
 
 def train(dataloader, model, loss_fn, optimizer):
+
+
     size = len(dataloader.dataset)
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to(device), y.to(device)
@@ -69,12 +72,17 @@ if __name__ == '__main__':
         print(f"{y.shape} {y.dtype}")
         break
 
+    # device = torch.device("cuda")
     # device = torch.device("mps")
+
     device = torch.device("cpu")
-    model = NeuralNetwork().to(device)
+    model = NeuralNetwork()
+    model = DataParallelModel(model)
+    model.to(device)
     print(model)
 
     loss_fn = nn.CrossEntropyLoss()
+    loss_fn = DataParallelCriterion(loss_fn)
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
     epochs = 5
