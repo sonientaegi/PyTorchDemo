@@ -5,6 +5,19 @@ from torchvision.transforms import ToTensor
 
 from network import NeuralNetwork
 
+classes = [
+    "T-shirt/top",
+    "Trouser",
+    "Pullover",
+    "Dress",
+    "Coat",
+    "Sandal",
+    "Shirt",
+    "Sneaker",
+    "Bag",
+    "Ankle boot",
+]
+
 if __name__ == '__main__':
     model = NeuralNetwork()
     model.load_state_dict(torch.load("demo_model.pth"))
@@ -15,14 +28,15 @@ if __name__ == '__main__':
         download=True,
         transform=ToTensor(),
     )
-    batch_size = 64
-    test_dataloader = DataLoader(test_data, batch_size=batch_size)
 
     model.eval()
+    i = 7
+    x, y = test_data[i][0], test_data[i][1]
     with torch.no_grad():
-        pred = model(test_data[0][0])
+        pred = model(x)
         print(pred)
-        print(pred[0].argmax(0))
+        predicted, actual = classes[pred[0].argmax(0)], classes[y]
+        print(f'Predicted: "{predicted}", Actual: "{actual}"')
 
 
 
