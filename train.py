@@ -73,9 +73,8 @@ if __name__ == '__main__':
         break
 
     # device = torch.device("cuda")
-    # device = torch.device("mps")
-
-    device = torch.device("cpu")
+    device = torch.device("mps")
+    # device = torch.device("cpu")
     model = NeuralNetwork()
     model = DataParallelModel(model)
     model.to(device)

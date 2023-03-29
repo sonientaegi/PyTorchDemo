@@ -4,9 +4,11 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 
 from network import NeuralNetwork
+from parallel import DataParallelModel, DataParallelCriterion
 
 if __name__ == '__main__':
     model = NeuralNetwork()
+    model = DataParallelModel(model)
     model.load_state_dict(torch.load("demo_model.pth"))
 
     test_data = datasets.FashionMNIST(
