@@ -1,15 +1,19 @@
 from torch import nn
 
+num_of_nodes = 128 * 128
+
+
 class NeuralNetwork(nn.Module):
+
     def __init__(self):
         super().__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(28*28, 512),
+            nn.Linear(28*28, num_of_nodes),
             nn.ReLU(),
-            nn.Linear(512, 512),
+            nn.Linear(num_of_nodes, num_of_nodes),
             nn.ReLU(),
-            nn.Linear(512, 10)
+            nn.Linear(num_of_nodes, 10)
         )
 
     def forward(self, x):

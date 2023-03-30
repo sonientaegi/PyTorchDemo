@@ -1,9 +1,13 @@
 import torch
 from torch.utils.data import DataLoader
+from torch import nn
 from torchvision import datasets
 from torchvision.transforms import ToTensor
 
 from network import NeuralNetwork
+from parallel import DataParallelModel, DataParallelCriterion
+
+parallelize = True
 
 classes = [
     "T-shirt/top",
@@ -20,11 +24,14 @@ classes = [
 
 if __name__ == '__main__':
     model = NeuralNetwork()
+    if parallelize:
+        model = nn.DataParallel(model)
+        # model = DataParallelModel(model)
     model.load_state_dict(torch.load("demo_model.pth"))
 
     test_data = datasets.FashionMNIST(
         root="data",
-        train=False,
+        train=True,
         download=True,
         transform=ToTensor(),
     )

@@ -7,6 +7,10 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 
 from network import NeuralNetwork
+from parallel import DataParallelModel, DataParallelCriterion
+
+parallelize = True
+device_type = "mps"     # "cpu", "mps", "cuda"
 
 
 def test(dataloader, model, loss_fn, device):
@@ -58,7 +62,7 @@ if __name__ == '__main__':
 
     test_data = datasets.FashionMNIST(
         root="data",
-        train=False,
+        train=True,
         download=True,
         transform=ToTensor(),
     )
@@ -73,12 +77,17 @@ if __name__ == '__main__':
         print(f"Shape of y: {y.shape} {y.dtype}")
         break
 
-    device = torch.device("mps")
-    # device = torch.device("cpu")
-    model = NeuralNetwork().to(device)
+    device = torch.device(device_type)
+    model = NeuralNetwork()
+    if parallelize:
+        # model = DataParallelModel(model)
+        model = nn.DataParallel(model, output_device=0)
+    model.to(device)
     print(model)
 
     loss_fn = nn.CrossEntropyLoss()
+    # if parallelize:
+    #     loss_fn = DataParallelCriterion(loss_fn)
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
     epochs = 5
