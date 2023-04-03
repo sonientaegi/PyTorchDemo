@@ -1,13 +1,14 @@
+import time
+
 import torch
-from torch.utils.data import DataLoader
 from torch import nn
 from torchvision import datasets
 from torchvision.transforms import ToTensor
 
 from network import NeuralNetwork
-from parallel import DataParallelModel, DataParallelCriterion
 
 parallelize = True
+device_type = "mps"     # "cpu", "mps", "cuda"
 
 classes = [
     "T-shirt/top",
@@ -23,11 +24,14 @@ classes = [
 ]
 
 if __name__ == '__main__':
+    device = torch.device(device_type)
     model = NeuralNetwork()
     if parallelize:
         model = nn.DataParallel(model)
         # model = DataParallelModel(model)
     model.load_state_dict(torch.load("demo_model.pth"))
+    model = model.to(device)
+    model.eval()
 
     test_data = datasets.FashionMNIST(
         root="data",
@@ -36,14 +40,22 @@ if __name__ == '__main__':
         transform=ToTensor(),
     )
 
-    model.eval()
-    i = 7
-    x, y = test_data[i][0], test_data[i][1]
-    with torch.no_grad():
-        pred = model(x)
-        print(pred)
-        predicted, actual = classes[pred[0].argmax(0)], classes[y]
-        print(f'Predicted: "{predicted}", Actual: "{actual}"')
+    test_size = 1000 * 2
+    hit = 0
+    start = time.time()
+    for i in range(test_size):
+        x, y = test_data[i]
+        x = x.to(device)
+        y = torch.tensor(y, dtype=torch.int)
 
+        with torch.no_grad():
+            pred = model(x)
+            if y == pred[0].argmax(0):
+                hit += 1
 
+    fin = time.time()
+    hit_rate = hit / test_size * 100.0
 
+    print(f"Hit rate {hit_rate:.2f}%")
+    elapse = fin - start
+    print(f"Inference takes {elapse:.2f} s")

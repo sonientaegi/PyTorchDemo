@@ -7,7 +7,6 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 
 from network import NeuralNetwork
-from parallel import DataParallelModel, DataParallelCriterion
 
 parallelize = True
 device_type = "mps"     # "cpu", "mps", "cuda"
@@ -67,7 +66,7 @@ if __name__ == '__main__':
         transform=ToTensor(),
     )
 
-    batch_size = 64
+    batch_size = 32
 
     train_dataloader = DataLoader(training_data, batch_size=batch_size)
     test_dataloader = DataLoader(test_data, batch_size=batch_size)
@@ -90,7 +89,7 @@ if __name__ == '__main__':
     #     loss_fn = DataParallelCriterion(loss_fn)
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-    epochs = 5
+    epochs = 10
     start = time()
     for t in range(epochs):
         print(f"Epoch {t+1}\n-------------------------------")
