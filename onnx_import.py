@@ -15,7 +15,7 @@ if __name__ == '__main__':
     model = onnx.load("demo_model.onnx")
     onnx.checker.check_model(model)
 
-    ort_session = onnxruntime.InferenceSession("demo_model.onnx")
+    ort_session = onnxruntime.InferenceSession("demo_model.onnx", providers=['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider'])
     name = ort_session.get_inputs()[0].name
 
     test_data = datasets.FashionMNIST(
@@ -45,6 +45,3 @@ if __name__ == '__main__':
     print(f"Hit rate {hit_rate:.2f}%")
     elapse = fin - start
     print(f"Inference takes {elapse:.2f} s")
-
-    ort_outs = ort_session.run(None, ort_inputs)
-    print(ort_outs)

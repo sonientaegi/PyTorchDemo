@@ -29,7 +29,7 @@ if __name__ == '__main__':
     if parallelize:
         model = nn.DataParallel(model)
         # model = DataParallelModel(model)
-    model.load_state_dict(torch.load("demo_model.pth"))
+    model.load_state_dict(torch.load("demo_model.pth", map_location=device))
     model = model.to(device)
     model.eval()
 
@@ -50,6 +50,7 @@ if __name__ == '__main__':
 
         with torch.no_grad():
             pred = model(x)
+            pred = pred.cpu()
             if y == pred[0].argmax(0):
                 hit += 1
 
