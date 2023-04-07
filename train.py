@@ -6,11 +6,13 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision.transforms import ToTensor
 
-from network import NeuralNetwork
+parallelize = False
+device_type = "cuda"     # "cpu", "mps", "cuda"
 
-parallelize = True
-device_type = "mps"     # "cpu", "mps", "cuda"
-
+if device_type == "cuda":
+    from network_cuda import NeuralNetwork
+else:
+    from network import NeuralNetwork
 
 def test(dataloader, model, loss_fn, device):
     size = len(dataloader.dataset)
@@ -81,7 +83,7 @@ if __name__ == '__main__':
     if parallelize:
         # model = DataParallelModel(model)
         model = nn.DataParallel(model, output_device=0)
-    model.to(device)
+    #model.to(device)
     print(model)
 
     loss_fn = nn.CrossEntropyLoss()

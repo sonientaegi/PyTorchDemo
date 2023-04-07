@@ -7,8 +7,8 @@ from torchvision.transforms import ToTensor
 
 from network import NeuralNetwork
 
-parallelize = True
-device_type = "mps"     # "cpu", "mps", "cuda"
+parallelize = False
+device_type = "cuda"     # "cpu", "mps", "cuda"
 
 classes = [
     "T-shirt/top",
