@@ -28,16 +28,9 @@ classes = [
 
 if __name__ == '__main__':
     device = torch.device(device_type)
-    model = NeuralNetwork()
-    if parallelize:
-        model = nn.DataParallel(model)
-        # model = DataParallelModel(model)
-    model.load_state_dict(torch.load("demo_model.pth", map_location=device))
-    if device_type != "cuda":
-        model = model.to(device)
+    model = torch.jit.load("model_demo.pt")
     model.eval()
 
-    model = torch.jit.script(model)
     test_data = datasets.FashionMNIST(
         root="data",
         train=True,
@@ -65,3 +58,4 @@ if __name__ == '__main__':
     print(f"Hit rate {hit_rate:.2f}%")
     elapse = fin - start
     print(f"Inference takes {elapse:.2f} s")
+

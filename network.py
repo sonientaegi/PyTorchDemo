@@ -9,7 +9,9 @@ class NeuralNetwork(nn.Module):
         super().__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(28*28, num_of_nodes),
+            nn.Linear(28 * 28, num_of_nodes),
+            nn.ReLU(),
+            nn.Linear(num_of_nodes, num_of_nodes),
             nn.ReLU(),
             nn.Linear(num_of_nodes, num_of_nodes),
             nn.ReLU(),

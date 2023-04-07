@@ -7,7 +7,7 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 
 parallelize = False
-device_type = "cuda"     # "cpu", "mps", "cuda"
+device_type = "mps"     # "cpu", "mps", "cuda"
 
 if device_type == "cuda":
     from network_cuda import NeuralNetwork
