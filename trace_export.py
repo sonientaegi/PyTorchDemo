@@ -25,5 +25,14 @@ if __name__ == '__main__':
         model = model.to(device)
     model.eval()
 
-    model = torch.jit.script(model)
-    model.save("demo_model.script.pt")
+    test_data = datasets.FashionMNIST(
+        root="data",
+        train=True,
+        download=True,
+        transform=ToTensor(),
+    )
+    x, _ = test_data[0]
+    x = x.to(device)
+
+    model = torch.jit.trace(model, x)
+    model.save("demo_model.trace.pt")

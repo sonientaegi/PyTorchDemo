@@ -26,9 +26,11 @@ classes = [
     "Ankle boot",
 ]
 
+script_type = "trace" # script, trace
+
 if __name__ == '__main__':
     device = torch.device(device_type)
-    model = torch.jit.load("model_demo.pt")
+    model = torch.jit.load(f'demo_model.{script_type}.pt')
     model.eval()
 
     test_data = datasets.FashionMNIST(
