@@ -83,7 +83,9 @@ if __name__ == '__main__':
     if parallelize:
         # model = DataParallelModel(model)
         model = nn.DataParallel(model, output_device=0)
-    #model.to(device)
+    if device_type != "cuda":
+        model.to(device)
+
     print(model)
 
     loss_fn = nn.CrossEntropyLoss()

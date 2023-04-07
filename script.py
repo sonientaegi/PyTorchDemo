@@ -37,6 +37,7 @@ if __name__ == '__main__':
         model = model.to(device)
     model.eval()
 
+    model = torch.jit.script(model)
     test_data = datasets.FashionMNIST(
         root="data",
         train=True,
